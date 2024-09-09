@@ -7,18 +7,15 @@ class users_controller {
     const allUser = await userService.getAllUsers();
     res.status(200).json(allUser);
   }
-  //   constructor(userService) {
-  //     this.userService = userService;
-  //   }
 
-  //   async allData(req, res) {
-  //     try {
-  //       const user = await this.userService.getAllData();
-  //       res.status(300).json(user);
-  //     } catch (error) {
-  //       res.status(400).json({ error: error.message });
-  //     }
-  //   }
+  async register(req, res) {
+    try {
+      const newUser = await userService.createUser(req.body);
+      return res.status(200).json(newUser);
+    } catch (error) {
+      return res.status(400).json({ message: error.message });
+    }
+  }
 }
 
 export default users_controller;
