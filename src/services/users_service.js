@@ -1,5 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import userModel from "../models/users_model.js";
+import bcrypt from "bcrypt";
 const prisma = new PrismaClient();
 
 class users_service {
@@ -29,6 +30,18 @@ class users_service {
       },
     });
     return newUser;
+  }
+
+  async editUser(id, data) {
+    if (data.password) {
+      data.password = await bcrypt.hash(data.password, 10);
+    }
+    return await prisma.users.update({
+      where: { id: +id },
+      data: {
+        ...data,
+      },
+    });
   }
 }
 

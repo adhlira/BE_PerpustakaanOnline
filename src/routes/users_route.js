@@ -6,6 +6,7 @@ const userController = new users_controller();
 
 router.get("/users", (req, res) => userController.getAllUsers(req, res));
 router.post("/users", (req, res) => userController.register(req, res));
-router.get("/users/:id", (id, res) => userController.getUserById(id, res));
+router.get("/users/:id", (req, res) => userController.getUserById(req, res));
+router.put("/users/:id", (req, res) => userController.updateUser(req, res));
 
 export default router;

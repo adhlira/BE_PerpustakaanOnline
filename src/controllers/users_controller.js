@@ -14,6 +14,9 @@ class users_controller {
 
   async getUserById(req, res) {
     try {
+      if (isNaN(req.params.id)) {
+        return res.status(401).json({ message: "User Invalid" });
+      }
       const user = await userService.getUserById(req.params.id);
       if (!user) {
         return res.status(404).json({ message: "User Not Found" });
@@ -30,6 +33,15 @@ class users_controller {
       return res.status(200).json(newUser);
     } catch (error) {
       return res.status(400).json({ message: error.message });
+    }
+  }
+
+  async updateUser(req, res) {
+    try {
+      const updatedUser = await userService.editUser(req.params.id, req.body);
+      return res.status(200).json(updatedUser);
+    } catch (error) {
+      return res.status(500).json({ message: "Updated Data failed", error });
     }
   }
 }
