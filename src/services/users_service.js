@@ -7,6 +7,10 @@ class users_service {
     return await prisma.users.findMany();
   }
 
+  async getUserById(id) {
+    return await prisma.users.findUnique({ where: { id: +id } });
+  }
+
   async createUser(data) {
     const user = new userModel(data.role_id, data.username, data.password, data.name, data.email, data.phone_number, new Date(), new Date());
 
