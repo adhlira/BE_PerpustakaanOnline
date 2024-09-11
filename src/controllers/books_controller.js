@@ -5,8 +5,7 @@ const book_service = new bookService();
 class books_controller {
   async getAllBook(req, res) {
     try {
-      const allBooks = book_service.getAllBook();
-      console.log(allBooks);
+      const allBooks = await book_service.getAllBook();
       return res.status(200).json(allBooks);
     } catch (error) {
       return res.status(500).json({ message: error.message });
@@ -18,7 +17,7 @@ class books_controller {
       if (isNaN(req.params.id)) {
         return res.status(401).json({ message: "Book Invalid" });
       }
-      const book = book_service.getBookById(req.params.id);
+      const book = await book_service.getBookById(req.params.id);
       if (!book) {
         return res.status(404).json({ message: "Book Not Found" });
       }
@@ -39,7 +38,7 @@ class books_controller {
 
   async editBook(req, res) {
     try {
-      const updatedBook = book_service.editBook(req.params.id, req.body);
+      const updatedBook = await book_service.editBook(req.params.id, req.body);
       return res.status(200).json(updatedBook);
     } catch (error) {
       return res.status(500).json({ message: error.message });
@@ -51,7 +50,7 @@ class books_controller {
       if (isNaN(req.params.id)) {
         return res.status(401).json({ message: "Book Invalid" });
       }
-      const book = book_service.getBookById(req.params.id);
+      const book = await book_service.getBookById(req.params.id);
       if (!book) {
         return res.status(404).json({ message: "Book is Not Found" });
       }
