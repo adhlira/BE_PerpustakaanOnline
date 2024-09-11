@@ -5,7 +5,7 @@ const prisma = new PrismaClient();
 
 class books_service {
   async getAllBook() {
-    return await prisma.books.findMany();
+     return await prisma.books.findMany();
   }
 
   async getBookById(id) {
