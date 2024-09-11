@@ -36,3 +36,18 @@ model Users {
 
   @@map("users")
 }
+
+model Books {
+  id                Int      @id @default(autoincrement())
+  title             String
+  author            String
+  isbn              String   @unique
+  publisher         String
+  publication_years Int
+  category          String
+  status            String
+  created_at        DateTime @default(now())
+  updated_at        DateTime @updatedAt
+
+  @@map("books")
+}
