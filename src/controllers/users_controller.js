@@ -44,6 +44,22 @@ class users_controller {
       return res.status(500).json({ message: "Updated Data failed", error });
     }
   }
+
+  async deleteUser(req, res) {
+    try {
+      if (isNaN(req.params.id)) {
+        return res.status(401).json({ message: "User invalid" });
+      }
+      const user = await userService.getUserById(req.params.id);
+      if (!user) {
+        return res.status(404).json({ message: "User Not Found" });
+      }
+      await userService.deleteUser(req.params.id);
+      return res.status(200).json({ message: "User Successfully Deleted" });
+    } catch (error) {
+      return res.status(500).json({ message: "Deleted Data Failed", error });
+    }
+  }
 }
 
 export default users_controller;

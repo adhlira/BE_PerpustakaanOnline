@@ -1,6 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import userModel from "../models/users_model.js";
 import bcrypt from "bcrypt";
+
 const prisma = new PrismaClient();
 
 class users_service {
@@ -42,6 +43,10 @@ class users_service {
         ...data,
       },
     });
+  }
+
+  async deleteUser(id) {
+    return await prisma.users.delete({ where: { id: +id } });
   }
 }
 
