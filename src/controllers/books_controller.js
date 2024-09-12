@@ -39,7 +39,7 @@ class books_controller {
   async editBook(req, res) {
     try {
       const updatedBook = await book_service.editBook(req.params.id, req.body);
-      return res.status(200).json(updatedBook);
+      return res.status(200).json({ message: "Book updated successfully", updatedBook });
     } catch (error) {
       return res.status(500).json({ message: error.message });
     }
@@ -64,7 +64,11 @@ class books_controller {
   async searchBook(req, res) {
     try {
       const book = await book_service.searchBook(req.body);
-      return res.status(200).json(book);
+      if (book.length == 0) {
+        return res.status(404).json({ message: "Book Not Found" });
+      } else {
+        return res.status(200).json(book);
+      }
     } catch (error) {
       return res.status(500).json({ message: error.message });
     }
