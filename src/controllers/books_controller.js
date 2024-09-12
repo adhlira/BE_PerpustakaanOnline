@@ -60,6 +60,15 @@ class books_controller {
       return res.status(500).json({ message: error.message });
     }
   }
+
+  async searchBook(req, res) {
+    try {
+      const book = await book_service.searchBook(req.body);
+      return res.status(200).json(book);
+    } catch (error) {
+      return res.status(500).json({ message: error.message });
+    }
+  }
 }
 
 export default books_controller;

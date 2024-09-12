@@ -5,7 +5,7 @@ const prisma = new PrismaClient();
 
 class books_service {
   async getAllBook() {
-     return await prisma.books.findMany();
+    return await prisma.books.findMany();
   }
 
   async getBookById(id) {
@@ -44,6 +44,15 @@ class books_service {
 
   async deleteBook(id) {
     return await prisma.books.delete({ where: { id: +id } });
+  }
+
+  async searchBook({ title, author, isbn }) {
+    const book = await prisma.books.findMany({
+      where: {
+        OR: [{ title: { contains: title } }, { author: { contains: author } }, { isbn: { equals: isbn } }],
+      },
+    });
+    return book
   }
 }
 
