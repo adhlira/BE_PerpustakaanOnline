@@ -32,22 +32,24 @@ model Users {
   created_at   DateTime @default(now())
   updated_at   DateTime @updatedAt
 
-  Roles Roles @relation(fields: [role_id], references: [id])
+  Roles              Roles                @relation(fields: [role_id], references: [id])
+  BorrowingByMembers BorrowingByMembers[]
 
   @@map("users")
 }
 
 model Books {
-  id                Int      @id @default(autoincrement())
-  title             String
-  author            String
-  isbn              String   @unique
-  publisher         String
-  publication_years Int
-  category          String
-  status            String
-  created_at        DateTime @default(now())
-  updated_at        DateTime @updatedAt
+  id                 Int                  @id @default(autoincrement())
+  title              String
+  author             String
+  isbn               String               @unique
+  publisher          String
+  publication_years  Int
+  category           String
+  status             String
+  created_at         DateTime             @default(now())
+  updated_at         DateTime             @updatedAt
+  BorrowingByMembers BorrowingByMembers[]
 
   @@map("books")
 }
@@ -62,4 +64,22 @@ model Visitors {
   updated_at   DateTime @updatedAt
 
   @@map("visitors")
+}
+
+model BorrowingByMembers {
+  id          Int      @id @default(autoincrement())
+  user_id     Int
+  book_id     Int
+  borrow_date DateTime @default(now())
+  due_date    DateTime
+  return_date DateTime?
+  late_charge Int
+  status      String
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+
+  Users Users @relation(fields: [user_id], references: [id])
+  Books Books @relation(fields: [book_id], references: [id])
+
+  @@map("borrowing_by_members")
 }
