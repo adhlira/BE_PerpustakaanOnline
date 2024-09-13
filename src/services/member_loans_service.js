@@ -13,7 +13,7 @@ class member_loans_service {
   }
 
   async createBorrowing(data) {
-    const borrowing = new member_loans_model(data.user_id, data.book_id, new Date(), new Date(), new Date(), data.late_charge, data.status, new Date(), new Date());
+    const borrowing = new member_loans_model(data.user_id, data.book_id, new Date(), new Date(), null, data.late_charge, data.status, new Date(), new Date());
 
     const newBorrowing = await prisma.borrowingByMembers.create({
       data: {

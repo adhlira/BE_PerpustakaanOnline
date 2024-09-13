@@ -32,24 +32,25 @@ model Users {
   created_at   DateTime @default(now())
   updated_at   DateTime @updatedAt
 
-  Roles              Roles                @relation(fields: [role_id], references: [id])
-  BorrowingByMembers BorrowingByMembers[]
+  Roles  Roles                @relation(fields: [role_id], references: [id])
+  Member BorrowingByMembers[] @relation("Member")
+  Staff  BorrowingByMembers[] @relation("Staff")
 
   @@map("users")
 }
 
 model Books {
-  id                 Int                  @id @default(autoincrement())
-  title              String
-  author             String
-  isbn               String               @unique
-  publisher          String
-  publication_years  Int
-  category           String
-  status             String
-  created_at         DateTime             @default(now())
-  updated_at         DateTime             @updatedAt
-  BorrowingByMembers BorrowingByMembers[]
+  id                       Int                        @id @default(autoincrement())
+  title                    String
+  author                   String
+  isbn                     String                     @unique
+  publisher                String
+  publication_years        Int
+  category                 String
+  status                   String
+  created_at               DateTime                   @default(now())
+  updated_at               DateTime                   @updatedAt
+  DetailBorrowingByMembers DetailBorrowingByMembers[]
 
   @@map("books")
 }
@@ -68,18 +69,30 @@ model Visitors {
 
 model BorrowingByMembers {
   id          Int      @id @default(autoincrement())
-  user_id     Int
-  book_id     Int
+  member_id   Int
+  staff_id    Int
   borrow_date DateTime @default(now())
   due_date    DateTime
-  return_date DateTime?
-  late_charge Int
   status      String
   created_at  DateTime @default(now())
   updated_at  DateTime @updatedAt
 
-  Users Users @relation(fields: [user_id], references: [id])
-  Books Books @relation(fields: [book_id], references: [id])
+  Member                   Users                      @relation("Member", fields: [member_id], references: [id])
+  Staff                    Users                      @relation("Staff", fields: [staff_id], references: [id])
+  DetailBorrowingByMembers DetailBorrowingByMembers[]
 
   @@map("borrowing_by_members")
+}
+
+model DetailBorrowingByMembers {
+  loan_id     Int
+  book_id     Int
+  return_date DateTime?
+  late_charge Int
+  status      String
+  Loan        BorrowingByMembers @relation(fields: [loan_id], references: [id])
+  Book        Books              @relation(fields: [book_id], references: [id])
+
+  @@id([loan_id, book_id])
+  @@map("detail_borrowing_by_members")
 }
