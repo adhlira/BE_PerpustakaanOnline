@@ -40,14 +40,32 @@ class member_loans_service {
   }
 
   async editBorrowing(id, data) {
-    return await prisma.borrowingByMembers.update({
+    const borrowing = new member_loans_model(data.member_id, data.staff_id, new Date(), data.due_date, data.status, new Date(), new Date(), data.loan_id, data.book_id, data.return_date, data.late_charge, data.detail_borrowing_by_members);
+    const upadateBorrowing = await prisma.borrowingByMembers.update({
       where: {
         id: +id,
       },
       data: {
-        ...data,
+        member_id: borrowing.member_id,
+        staff_id: borrowing.staff_id,
+        borrow_date: borrowing.borrow_date,
+        due_date: new Date(borrowing.due_date),
+        status: borrowing.status,
+        DetailBorrowingByMembers: {
+          update: borrowing.detail_borrowing_by_members.map((detail) => ({
+            where: {
+              loan_id_book_id: { loan_id: +id, book_id: +detail.book_id },
+            },
+            data: {
+              return_date: new Date(detail.return_date),
+              late_charge: detail.late_charge,
+              status: detail.status,
+            },
+          })),
+        },
       },
     });
+    return upadateBorrowing;
   }
 
   async deleteBorrowing(id) {
