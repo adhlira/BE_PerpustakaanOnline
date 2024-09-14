@@ -47,7 +47,6 @@ class member_loans_controller {
         return res.status(404).json({ message: "Data not found" });
       } else {
         const updatedLoan = await LoanController.editBorrowing(req.params.id, req.body);
-        console.log(req.body);
         return res.status(200).json({ message: "Updated data successfully", updatedLoan });
       }
     } catch (error) {

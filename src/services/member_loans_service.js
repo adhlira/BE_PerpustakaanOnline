@@ -69,6 +69,7 @@ class member_loans_service {
   }
 
   async deleteBorrowing(id) {
+    await prisma.detailBorrowingByMembers.deleteMany({ where: { loan_id: +id } });
     return await prisma.borrowingByMembers.delete({ where: { id: +id } });
   }
 }
