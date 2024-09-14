@@ -13,19 +13,27 @@ class member_loans_service {
   }
 
   async createBorrowing(data) {
-    const borrowing = new member_loans_model(data.user_id, data.book_id, new Date(), new Date(), null, data.late_charge, data.status, new Date(), new Date());
+    const borrowing = new member_loans_model(data.member_id, data.staff_id, new Date(), data.due_date, data.status, new Date(), new Date(), data.loan_id, data.book_id, null, data.late_charge, data.detail_borrowing_by_members);
 
     const newBorrowing = await prisma.borrowingByMembers.create({
       data: {
-        user_id: borrowing.user_id,
-        book_id: borrowing.book_id,
+        member_id: borrowing.member_id,
+        staff_id: borrowing.staff_id,
         borrow_date: borrowing.borrow_date,
-        due_date: borrowing.due_date,
-        return_date: borrowing.return_date,
-        late_charge: borrowing.late_charge,
+        due_date: new Date(borrowing.due_date),
         status: borrowing.status,
         created_at: borrowing.created_at,
         updated_at: borrowing.updated_at,
+        DetailBorrowingByMembers: {
+          create: Array.isArray(borrowing.detail_borrowing_by_members)
+            ? borrowing.detail_borrowing_by_members.map((detail) => ({
+                book_id: detail.book_id,
+                return_date: borrowing.return_date,
+                late_charge: borrowing.late_charge,
+                status: borrowing.status,
+              }))
+            : [],
+        },
       },
     });
     return newBorrowing;
