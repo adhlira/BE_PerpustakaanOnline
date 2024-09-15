@@ -32,37 +32,40 @@ model Users {
   created_at   DateTime @default(now())
   updated_at   DateTime @updatedAt
 
-  Roles  Roles                @relation(fields: [role_id], references: [id])
-  Member BorrowingByMembers[] @relation("Member")
-  Staff  BorrowingByMembers[] @relation("Staff")
+  Roles               Roles                 @relation(fields: [role_id], references: [id])
+  Member              BorrowingByMembers[]  @relation("Member")
+  Staff               BorrowingByMembers[]  @relation("Staff")
+  BorrowingByVisitors BorrowingByVisitors[]
 
   @@map("users")
 }
 
 model Books {
-  id                       Int                        @id @default(autoincrement())
-  title                    String
-  author                   String
-  isbn                     String                     @unique
-  publisher                String
-  publication_years        Int
-  category                 String
-  status                   String
-  created_at               DateTime                   @default(now())
-  updated_at               DateTime                   @updatedAt
-  DetailBorrowingByMembers DetailBorrowingByMembers[]
+  id                        Int                         @id @default(autoincrement())
+  title                     String
+  author                    String
+  isbn                      String                      @unique
+  publisher                 String
+  publication_years         Int
+  category                  String
+  status                    String
+  created_at                DateTime                    @default(now())
+  updated_at                DateTime                    @updatedAt
+  DetailBorrowingByMembers  DetailBorrowingByMembers[]
+  DetailBorrowingByVisitors DetailBorrowingByVisitors[]
 
   @@map("books")
 }
 
 model Visitors {
-  id           Int      @id @default(autoincrement())
-  name         String
-  email        String   @unique
-  phone_number String   @unique
-  visit_date   DateTime @default(now())
-  created_at   DateTime @default(now())
-  updated_at   DateTime @updatedAt
+  id                  Int                   @id @default(autoincrement())
+  name                String
+  email               String                @unique
+  phone_number        String                @unique
+  visit_date          DateTime              @default(now())
+  created_at          DateTime              @default(now())
+  updated_at          DateTime              @updatedAt
+  BorrowingByVisitors BorrowingByVisitors[]
 
   @@map("visitors")
 }
@@ -95,4 +98,35 @@ model DetailBorrowingByMembers {
 
   @@id([loan_id, book_id])
   @@map("detail_borrowing_by_members")
+}
+
+model BorrowingByVisitors {
+  id          Int      @id @default(autoincrement())
+  visitor_id  Int
+  staff_id    Int
+  borrow_date DateTime @default(now())
+  due_date    DateTime
+  status      String
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+
+  Visitor                   Visitors                    @relation(fields: [visitor_id], references: [id])
+  Users                     Users                       @relation(fields: [staff_id], references: [id])
+  DetailBorrowingByVisitors DetailBorrowingByVisitors[]
+
+  @@map("borrowing_by_visitors")
+}
+
+model DetailBorrowingByVisitors {
+  borrowing_id Int
+  book_id      Int
+  return_date  DateTime?
+  late_charge  Int
+  status       String
+
+  Borrowing BorrowingByVisitors @relation(fields: [borrowing_id], references: [id])
+  Book      Books               @relation(fields: [book_id], references: [id])
+
+  @@id([book_id, borrowing_id])
+  @@map("detail_borrowing_by_visitors")
 }
