@@ -36,6 +36,7 @@ model Users {
   Member              BorrowingByMembers[]  @relation("Member")
   Staff               BorrowingByMembers[]  @relation("Staff")
   BorrowingByVisitors BorrowingByVisitors[]
+  Tokens              Tokens[]
 
   @@map("users")
 }
@@ -129,4 +130,17 @@ model DetailBorrowingByVisitors {
 
   @@id([book_id, borrowing_id])
   @@map("detail_borrowing_by_visitors")
+}
+
+model Tokens {
+  id         Int      @id @default(autoincrement())
+  userId     Int
+  token      String   @unique
+  expired_at DateTime
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  Users Users @relation(fields: [userId], references: [id])
+
+  @@map("tokens")
 }
