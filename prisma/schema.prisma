@@ -13,6 +13,12 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum bookStatusReservation{
+  PENDING
+  AVAILABLE
+  NOTIFIED
+}
+
 model Roles {
   id    Int     @id @default(autoincrement())
   name  String
@@ -37,6 +43,7 @@ model Users {
   Staff               BorrowingByMembers[]  @relation("Staff")
   BorrowingByVisitors BorrowingByVisitors[]
   Tokens              Tokens[]
+  BookReservation     BookReservation[]
 
   @@map("users")
 }
@@ -54,6 +61,7 @@ model Books {
   updated_at                DateTime                    @updatedAt
   DetailBorrowingByMembers  DetailBorrowingByMembers[]
   DetailBorrowingByVisitors DetailBorrowingByVisitors[]
+  BookReservation           BookReservation[]
 
   @@map("books")
 }
@@ -143,4 +151,20 @@ model Tokens {
   Users Users @relation(fields: [userId], references: [id])
 
   @@map("tokens")
+}
+
+model BookReservation {
+  id                Int      @id @default(autoincrement())
+  member_id         Int
+  book_id           Int
+  reservation_date  DateTime
+  status            bookStatusReservation
+  notification_sent Boolean
+  created_at        DateTime @default(now())
+  updated_at        DateTime @updatedAt
+
+  Users Users @relation(fields: [member_id], references: [id])
+  Book  Books @relation(fields: [book_id], references: [id])
+
+  @@map("book_reservation")
 }
