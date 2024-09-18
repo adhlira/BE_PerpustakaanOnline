@@ -6,6 +6,7 @@ import memberLoanRoute from "./routes/member_loans_route.js";
 import visitorLoanRoute from "./routes/visitor_loans_route.js";
 import loginRoute from "./routes/login_route.js";
 import reservationRoute from "./routes/reservation_route.js";
+import lostOrDamagedBooksRoute from "./routes/lost_or_damaged_books_route.js";
 
 const app = express();
 
@@ -17,5 +18,6 @@ app.use(memberLoanRoute);
 app.use(visitorLoanRoute);
 app.use(loginRoute);
 app.use(reservationRoute);
+app.use(lostOrDamagedBooksRoute);
 
 export default app;
