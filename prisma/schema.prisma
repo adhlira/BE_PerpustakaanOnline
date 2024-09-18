@@ -13,10 +13,15 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum bookStatusReservation {
+enum bookStatus {
   PENDING
   AVAILABLE
+  NOT_AVAILABLE
   NOTIFIED
+  LOST
+  DAMAGED
+  BORROWED
+  RETURNED
 }
 
 model Roles {
@@ -56,12 +61,13 @@ model Books {
   publisher                 String
   publication_years         Int
   category                  String
-  status                    String
+  status                    bookStatus
   created_at                DateTime                    @default(now())
   updated_at                DateTime                    @updatedAt
   DetailBorrowingByMembers  DetailBorrowingByMembers[]
   DetailBorrowingByVisitors DetailBorrowingByVisitors[]
   DetailBookReservation     DetailBookReservation[]
+  LostOrDamgedBooks         LostOrDamgedBooks[]
 
   @@map("books")
 }
@@ -80,14 +86,14 @@ model Visitors {
 }
 
 model BorrowingByMembers {
-  id          Int      @id @default(autoincrement())
+  id          Int        @id @default(autoincrement())
   member_id   Int
   staff_id    Int
-  borrow_date DateTime @default(now())
+  borrow_date DateTime   @default(now())
   due_date    DateTime
-  status      String
-  created_at  DateTime @default(now())
-  updated_at  DateTime @updatedAt
+  status      bookStatus
+  created_at  DateTime   @default(now())
+  updated_at  DateTime   @updatedAt
 
   Member                   Users                      @relation("Member", fields: [member_id], references: [id])
   Staff                    Users                      @relation("Staff", fields: [staff_id], references: [id])
@@ -101,7 +107,7 @@ model DetailBorrowingByMembers {
   book_id     Int
   return_date DateTime?
   late_charge Int
-  status      String
+  status      bookStatus
   Loan        BorrowingByMembers @relation(fields: [loan_id], references: [id])
   Book        Books              @relation(fields: [book_id], references: [id])
 
@@ -110,14 +116,14 @@ model DetailBorrowingByMembers {
 }
 
 model BorrowingByVisitors {
-  id          Int      @id @default(autoincrement())
+  id          Int        @id @default(autoincrement())
   visitor_id  Int
   staff_id    Int
-  borrow_date DateTime @default(now())
+  borrow_date DateTime   @default(now())
   due_date    DateTime
-  status      String
-  created_at  DateTime @default(now())
-  updated_at  DateTime @updatedAt
+  status      bookStatus
+  created_at  DateTime   @default(now())
+  updated_at  DateTime   @updatedAt
 
   Visitor                   Visitors                    @relation(fields: [visitor_id], references: [id])
   Users                     Users                       @relation(fields: [staff_id], references: [id])
@@ -131,7 +137,7 @@ model DetailBorrowingByVisitors {
   book_id      Int
   return_date  DateTime?
   late_charge  Int
-  status       String
+  status       bookStatus
 
   Borrowing BorrowingByVisitors @relation(fields: [borrowing_id], references: [id])
   Book      Books               @relation(fields: [book_id], references: [id])
@@ -154,13 +160,13 @@ model Tokens {
 }
 
 model BookReservation {
-  id                Int                   @id @default(autoincrement())
+  id                Int        @id @default(autoincrement())
   member_id         Int
   reservation_date  DateTime
-  status            bookStatusReservation
+  status            bookStatus
   notification_sent Boolean
-  created_at        DateTime              @default(now())
-  updated_at        DateTime              @updatedAt
+  created_at        DateTime   @default(now())
+  updated_at        DateTime   @updatedAt
 
   Users                 Users                   @relation(fields: [member_id], references: [id])
   DetailBookReservation DetailBookReservation[]
@@ -171,7 +177,7 @@ model BookReservation {
 model DetailBookReservation {
   reservation_id    Int
   book_id           Int
-  status            bookStatusReservation
+  status            bookStatus
   notification_sent Boolean
 
   Reservation BookReservation @relation(fields: [reservation_id], references: [id])
@@ -179,4 +185,18 @@ model DetailBookReservation {
 
   @@id([reservation_id, book_id])
   @@map("detail_book_reservatiion")
+}
+
+model LostOrDamgedBooks {
+  id            Int        @id @default(autoincrement())
+  book_id       Int
+  status        bookStatus
+  reported_date DateTime   @default(now())
+  descriptiion  String
+  created_at    DateTime   @default(now())
+  updated_at    DateTime   @updatedAt
+
+  Book Books @relation(fields: [book_id], references: [id])
+
+  @@map("lost_or_damaged_books")
 }

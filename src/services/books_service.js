@@ -46,10 +46,10 @@ class books_service {
     return await prisma.books.delete({ where: { id: +id } });
   }
 
-  async searchBook({ title, author, isbn }) {
+  async searchBook({ title, author, category }) {
     const book = await prisma.books.findMany({
       where: {
-        OR: [{ title: { contains: title } }, { author: { contains: author } }, { isbn: { equals: isbn } }],
+        OR: [{ title: { contains: title } }, { author: { contains: author } }, { category: { equals: category } }],
       },
     });
     return book
