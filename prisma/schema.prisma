@@ -13,7 +13,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum bookStatusReservation{
+enum bookStatusReservation {
   PENDING
   AVAILABLE
   NOTIFIED
@@ -61,7 +61,7 @@ model Books {
   updated_at                DateTime                    @updatedAt
   DetailBorrowingByMembers  DetailBorrowingByMembers[]
   DetailBorrowingByVisitors DetailBorrowingByVisitors[]
-  BookReservation           BookReservation[]
+  DetailBookReservation     DetailBookReservation[]
 
   @@map("books")
 }
@@ -154,17 +154,29 @@ model Tokens {
 }
 
 model BookReservation {
-  id                Int      @id @default(autoincrement())
+  id                Int                   @id @default(autoincrement())
   member_id         Int
-  book_id           Int
   reservation_date  DateTime
   status            bookStatusReservation
   notification_sent Boolean
-  created_at        DateTime @default(now())
-  updated_at        DateTime @updatedAt
+  created_at        DateTime              @default(now())
+  updated_at        DateTime              @updatedAt
 
-  Users Users @relation(fields: [member_id], references: [id])
-  Book  Books @relation(fields: [book_id], references: [id])
+  Users                 Users                   @relation(fields: [member_id], references: [id])
+  DetailBookReservation DetailBookReservation[]
 
   @@map("book_reservation")
+}
+
+model DetailBookReservation {
+  reservation_id    Int
+  book_id           Int
+  status            bookStatusReservation
+  notification_sent Boolean
+
+  Reservation BookReservation @relation(fields: [reservation_id], references: [id])
+  Book        Books           @relation(fields: [book_id], references: [id])
+
+  @@id([reservation_id, book_id])
+  @@map("detail_book_reservatiion")
 }

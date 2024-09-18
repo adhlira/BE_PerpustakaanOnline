@@ -13,29 +13,53 @@ class reservation_service {
   }
 
   async createReservation(data) {
-    const dataReservation = new reservation_model(data.member_id, data.book_id, data.reservation_date, data.status, data.notification_sent, new Date(), new Date());
+    const dataReservation = new reservation_model(data.member_id, data.book_id, data.reservation_date, data.status, data.notification_sent, new Date(), new Date(), data.detail_book_reservation);
 
     const newReservation = await prisma.bookReservation.create({
       data: {
         member_id: dataReservation.member_id,
-        book_id: dataReservation.book_id,
         reservation_date: dataReservation.reservation_date,
         status: dataReservation.status,
         notification_sent: dataReservation.notification_sent,
         created_at: dataReservation.created_at,
         updated_at: dataReservation.updated_at,
+        DetailBookReservation: {
+          create: Array.isArray(dataReservation.detail_book_reservation)
+            ? dataReservation.detail_book_reservation.map((detail) => ({
+                book_id: detail.book_id,
+                status: dataReservation.status,
+                notification_sent: dataReservation.notification_sent,
+              }))
+            : [],
+        },
       },
     });
     return newReservation;
   }
 
   async editReservation(id, data) {
-    return await prisma.bookReservation.update({
+    const dataReservation = new reservation_model(data.member_id, data.book_id, data.reservation_date, data.status, data.notification_sent, new Date(), new Date(), data.detail_book_reservation);
+
+    const updateReservation = prisma.bookReservation.update({
       where: { id: +id },
       data: {
-        ...data,
+        member_id: dataReservation.member_id,
+        reservation_date: dataReservation.reservation_date,
+        status: dataReservation.status,
+        DetailBookReservation: {
+          update: dataReservation.detail_book_reservation.map((detail) => ({
+            where: {
+              reservation_id_book_id: { reservation_id: +id, book_id: detail.book_id },
+            },
+            data: {
+              status: detail.status,
+              notification_sent: detail.notification_sent,
+            },
+          })),
+        },
       },
     });
+    return updateReservation;
   }
 
   async deleteReservation(id) {
