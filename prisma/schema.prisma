@@ -25,9 +25,10 @@ enum bookStatus {
 }
 
 model Roles {
-  id    Int     @id @default(autoincrement())
-  name  String
-  Users Users[]
+  id             Int              @id @default(autoincrement())
+  name           String
+  Users          Users[]
+  PermissionRole PermissionRole[]
 
   @@map("role")
 }
@@ -199,4 +200,25 @@ model LostOrDamgedBooks {
   Book Books @relation(fields: [book_id], references: [id])
 
   @@map("lost_or_damaged_books")
+}
+
+model Permissions {
+  id             Int              @id @default(autoincrement())
+  name           String
+  created_at     DateTime         @default(now())
+  updated_at     DateTime         @updatedAt
+  PermissionRole PermissionRole[]
+
+  @@map("permissions")
+}
+
+model PermissionRole {
+  permission_id Int
+  role_id       Int
+
+  Permission Permissions @relation(fields: [permission_id], references: [id])
+  Role       Roles       @relation(fields: [role_id], references: [id])
+
+  @@id([permission_id, role_id])
+  @@map("permission_role")
 }
