@@ -21,7 +21,7 @@ class login_service {
     const expiredAt = new Date(Date.now() + 60 * 480 * 1000);
 
     const token = jwt.sign({ userId: user.id }, secretKey, { expiresIn });
-    console.log(token);
+    // console.log(token);
     const newToken = await prisma.tokens.create({
       data: {
         userId: user.id,

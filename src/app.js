@@ -11,12 +11,12 @@ import lostOrDamagedBooksRoute from "./routes/lost_or_damaged_books_route.js";
 const app = express();
 
 app.use(express.json());
+app.use(loginRoute);
 app.use(userRoute);
 app.use(bookRoute);
 app.use(visitorRoute);
 app.use(memberLoanRoute);
 app.use(visitorLoanRoute);
-app.use(loginRoute);
 app.use(reservationRoute);
 app.use(lostOrDamagedBooksRoute);
 
