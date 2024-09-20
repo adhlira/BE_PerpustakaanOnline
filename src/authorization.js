@@ -29,6 +29,16 @@ export const Permission = {
   ADD_VISITOR: "add_visitor",
   EDIT_VISITOR: "edit_visitor",
   DELETE_VISITOR: "delete_visitor",
+
+  BROWSE_RESERVATION: "browse_reservation",
+  ADD_RESERVATION: "add_reservation",
+  EDIT_RESERVATION: "edit_reservation",
+  DELETE_RESERVATION: "delete_reservation",
+
+  BROWSE_LOST_OR_DAMAGED_BOOKS: "browse_lost_or_damaged_books",
+  ADD_LOST_OR_DAMAGED_BOOKS: "add_lost_or_damaged_books",
+  EDIT_LOST_OR_DAMAGED_BOOKS: "edit_lost_or_damaged_books",
+  DELETE_LOST_OR_DAMAGED_BOOKS: "delete_lost_or_damaged_books",
 };
 
 export const PermissionAssignment = {
@@ -57,6 +67,15 @@ export const PermissionAssignment = {
     Permission.ADD_VISITOR,
     Permission.EDIT_VISITOR,
     Permission.DELETE_VISITOR,
+
+    Permission.BROWSE_LOST_OR_DAMAGED_BOOKS,
+    Permission.ADD_LOST_OR_DAMAGED_BOOKS,
+    Permission.EDIT_LOST_OR_DAMAGED_BOOKS,
+    Permission.DELETE_LOST_OR_DAMAGED_BOOKS,
+
+    Permission.BROWSE_RESERVATION,
+    Permission.EDIT_RESERVATION,
+    Permission.DELETE_RESERVATION,
   ],
 
   [Role.STAFF]: [
@@ -73,7 +92,14 @@ export const PermissionAssignment = {
     Permission.BROWSE_VISITOR,
     Permission.ADD_VISITOR,
     Permission.EDIT_VISITOR,
+
+    Permission.BROWSE_LOST_OR_DAMAGED_BOOKS,
+    Permission.ADD_LOST_OR_DAMAGED_BOOKS,
+    Permission.EDIT_LOST_OR_DAMAGED_BOOKS,
+
+    Permission.BROWSE_RESERVATION,
+    Permission.EDIT_RESERVATION,
   ],
 
-  [Role.MEMBER]: [Permission.BROWSE_BOOK],
+  [Role.MEMBER]: [Permission.BROWSE_BOOK, Permission.BROWSE_RESERVATION, Permission.ADD_RESERVATION],
 };
